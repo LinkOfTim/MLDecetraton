@@ -18,7 +18,15 @@ app.py — Точка входа Streamlit приложения
 import warnings
 warnings.filterwarnings("ignore")
 
+import sys
+import os
 import streamlit as st
+from pathlib import Path
+
+# Добавляем папку проекта в sys.path чтобы импорты core.* и ui.* работали
+_APP_DIR = Path(__file__).parent.resolve()
+if str(_APP_DIR) not in sys.path:
+    sys.path.insert(0, str(_APP_DIR))
 
 from core.model import (
     load_bundle, load_train, load_ext_lookup, load_explainer,
@@ -26,9 +34,6 @@ from core.model import (
 from core.config import HIGH_T, LOW_T
 from ui.manual import manual_input_tab
 from ui.upload import batch_scoring_tab
-
-import warnings
-warnings.filterwarnings("ignore", message=".*use_container_width.*")
 
 # ── Конфиг страницы ──────────────────────────────────────────────────────────
 st.set_page_config(
@@ -44,13 +49,12 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap');
 html, body, [class*="css"] { font-family: 'Golos Text', sans-serif; }
 
-.main-title { font-size:28px; font-weight:700; color:#14532d; margin-bottom:4px; }
-.sub-title  { font-size:15px; color:#6b7280; margin-bottom:24px; }
+.main-title { font-size:28px; font-weight:700; color:#4ade80; margin-bottom:4px; }
+.sub-title  { font-size:15px; color:#9ca3af; margin-bottom:24px; }
 
 .card {
-    background:#fff; border:1px solid #e5e7eb; border-radius:14px;
-    padding:20px; margin-bottom:12px;
-    box-shadow:0 1px 3px rgba(0,0,0,.06);
+    background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12);
+    border-radius:14px; padding:20px; margin-bottom:12px;
 }
 .score-big { font-size:72px; font-weight:700; line-height:1; }
 .badge {
@@ -58,18 +62,21 @@ html, body, [class*="css"] { font-family: 'Golos Text', sans-serif; }
     font-size:16px; font-weight:600;
 }
 .metric-box {
-    text-align:center; padding:14px; background:#f9fafb;
-    border-radius:10px; border:1px solid #e5e7eb;
+    text-align:center; padding:14px;
+    background:rgba(255,255,255,0.05);
+    border-radius:10px; border:1px solid rgba(255,255,255,0.1);
 }
-.metric-val { font-size:28px; font-weight:700; color:#14532d; }
-.metric-lbl { font-size:12px; color:#6b7280; margin-top:2px; }
+.metric-val { font-size:28px; font-weight:700; color:#4ade80; }
+.metric-lbl { font-size:12px; color:#9ca3af; margin-top:2px; }
 .factor-pos {
-    background:#f0fdf4; border-left:3px solid #16a34a;
-    padding:8px 12px; border-radius:0 6px 6px 0; margin:4px 0; font-size:14px;
+    background:rgba(22,163,74,0.15); border-left:3px solid #16a34a;
+    padding:8px 12px; border-radius:0 6px 6px 0; margin:4px 0;
+    font-size:14px; color:#4ade80;
 }
 .factor-neg {
-    background:#fef2f2; border-left:3px solid #dc2626;
-    padding:8px 12px; border-radius:0 6px 6px 0; margin:4px 0; font-size:14px;
+    background:rgba(220,38,38,0.15); border-left:3px solid #dc2626;
+    padding:8px 12px; border-radius:0 6px 6px 0; margin:4px 0;
+    font-size:14px; color:#f87171;
 }
 .stButton > button[kind="primary"] {
     background:#16a34a !important; color:#fff !important; border:none !important;

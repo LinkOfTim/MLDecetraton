@@ -16,6 +16,7 @@ from core.config import (
     AKIMAT_MAP, DISTRICT_MAP, SUBSIDY_MAP, NORMATIVE_MAP, DIRECTION_MAP,
 )
 from core.model import predict, get_shap_values, score_badge
+from core.translations import translate_features, FEATURE_NAMES_RU
 
 
 def manual_input_tab(bundle, train_df, ext_lkp, explainer, features):
@@ -103,28 +104,28 @@ def manual_input_tab(bundle, train_df, ext_lkp, explainer, features):
 
         # Score карточка
         st.markdown(f"""
-        <div class="card" style="text-align:center;border-color:{color}40">
-            <div style="color:#6b7280;font-size:13px;margin-bottom:4px">Скор заявки</div>
+        <div class="card" style="text-align:center;border-color:{color}60">
+            <div style="color:#9ca3af;font-size:13px;margin-bottom:4px">Скор заявки</div>
             <div class="score-big" style="color:{color}">{score:.1f}</div>
-            <div style="color:#9ca3af;font-size:13px">из 100</div>
-            <div class="badge" style="background:{bg};color:{color};border:1.5px solid {color}40;margin-top:10px">
+            <div style="color:#6b7280;font-size:13px">из 100</div>
+            <div class="badge" style="background:{color}25;color:{color};border:1.5px solid {color}60;margin-top:10px">
                 {label}
             </div>
-            <div style="color:#9ca3af;font-size:12px;margin-top:10px">
-                Вероятность одобрения: <b>{p:.1%}</b>
+            <div style="color:#6b7280;font-size:12px;margin-top:10px">
+                Вероятность одобрения: <b style="color:#e5e7eb">{p:.1%}</b>
             </div>
         </div>
         """, unsafe_allow_html=True)
 
         # Зоны
         st.markdown(f"""
-        <div class="card" style="font-size:13px">
-            <b>Трёхзонная система:</b><br><br>
-            <span style="color:{'#16a34a' if p>=HIGH_T else '#9ca3af'}">
+        <div class="card" style="font-size:13px;color:#d1d5db">
+            <b style="color:#f3f4f6">Трёхзонная система:</b><br><br>
+            <span style="color:{'#4ade80' if p>=HIGH_T else '#6b7280'}">
                 ✅ Авто-одобрение &nbsp; p ≥ {HIGH_T:.2f}</span><br>
-            <span style="color:{'#d97706' if LOW_T<p<HIGH_T else '#9ca3af'}">
+            <span style="color:{'#fbbf24' if LOW_T<p<HIGH_T else '#6b7280'}">
                 ⚠️ Ручная проверка &nbsp; {LOW_T:.2f} &lt; p &lt; {HIGH_T:.2f}</span><br>
-            <span style="color:{'#dc2626' if p<=LOW_T else '#9ca3af'}">
+            <span style="color:{'#f87171' if p<=LOW_T else '#6b7280'}">
                 ❌ Авто-отклонение &nbsp; p ≤ {LOW_T:.2f}</span>
         </div>
         """, unsafe_allow_html=True)
@@ -132,7 +133,7 @@ def manual_input_tab(bundle, train_df, ext_lkp, explainer, features):
         # Факторы SHAP
         st.markdown("**Объяснение решения:**")
         sv1, ev1 = get_shap_values(explainer, X_feat)
-        row_sv   = sv1[0] if sv1.ndim > 1 else sv1
+        row_sv    = sv1[0] if sv1.ndim > 1 else sv1
         feat_vals = list(zip(features, row_sv))
 
         top_pos = sorted(feat_vals, key=lambda x: x[1], reverse=True)[:4]
@@ -143,27 +144,31 @@ def manual_input_tab(bundle, train_df, ext_lkp, explainer, features):
             st.markdown("**За ✅**")
             for f, v in top_pos:
                 if v > 0.01:
+                    label = FEATURE_NAMES_RU.get(f, f)
                     st.markdown(
-                        f'<div class="factor-pos">+{v:.2f} &nbsp; <code>{f}</code></div>',
+                        f'<div class="factor-pos">+{v:.2f} &nbsp; {label}</div>',
                         unsafe_allow_html=True,
                     )
         with c_neg:
             st.markdown("**Против ❌**")
             for f, v in top_neg:
                 if v < -0.01:
+                    label = FEATURE_NAMES_RU.get(f, f)
                     st.markdown(
-                        f'<div class="factor-neg">{v:.2f} &nbsp; <code>{f}</code></div>',
+                        f'<div class="factor-neg">{v:.2f} &nbsp; {label}</div>',
                         unsafe_allow_html=True,
                     )
 
-        # Waterfall
+        # Waterfall с русскими названиями
         with st.expander("📊 Подробный SHAP waterfall"):
             try:
+                ru_features = translate_features(list(features))
                 expl = shap.Explanation(
                     values=row_sv, base_values=ev1,
-                    data=X_feat.iloc[0].values, feature_names=list(features),
+                    data=X_feat.iloc[0].values,
+                    feature_names=ru_features,
                 )
-                fig, ax = plt.subplots(figsize=(9, 5))
+                fig, ax = plt.subplots(figsize=(10, 5))
                 plt.sca(ax)
                 shap.plots.waterfall(expl, max_display=12, show=False)
                 plt.title(f"Скор {score:.1f}/100", fontsize=12)

@@ -35,8 +35,6 @@ project/
 ├── subsidy_scoring_v5.py       # Скрипт обучения модели (Kaggle)
 ├── scoring_output/
 │   └── ensemble_v5.pkl         # Обученная модель (скачать с Kaggle)
-├── 2025  ().xlsx               # Основной датасет (предоставлен организаторами)
-├── merged_subsidii_full.xlsx   # Внешние данные акиматов (data.egov.kz)
 ├── requirements.txt
 └── README.md
 ```
@@ -48,7 +46,7 @@ project/
 ### 1. Клонировать репозиторий
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/subsidy-scoring.git
+git clone https://github.com/LinkOfTim/MLDecetraton.git
 cd subsidy-scoring
 ```
 
