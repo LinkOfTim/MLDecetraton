@@ -47,27 +47,6 @@ venv.bak/
 *.swn
 
 # =========================
-# Jupyter / IPython
-# =========================
-.ipynb_checkpoints
-profile_default/
-ipython_config.py
-
-# =========================
-# Logs & debug
-# =========================
-*.log
-logs/
-*.out
-*.err
-
-# =========================
-# OS files
-# =========================
-.DS_Store
-Thumbs.db
-
-# =========================
 # Testing / coverage
 # =========================
 .tox/
@@ -99,58 +78,8 @@ dmypy.json
 *.cfg
 
 # =========================
-# Data (важно для ML)
-# =========================
-data/
-datasets/
-*.csv
-*.tsv
-*.json
-*.parquet
-*.h5
-*.hdf5
-*.pkl
-*.pickle
-
-# =========================
-# Models / checkpoints
-# =========================
-*.pth
-*.pt
-*.ckpt
-*.onnx
-*.bin
-models/
-checkpoints/
-
-# =========================
-# Outputs (Kaggle / experiments)
-# =========================
-/kaggle/working/
-outputs/
-results/
-submissions/
-*.png
-*.jpg
-*.jpeg
-*.pdf
-
-# =========================
 # Cache
 # =========================
 .cache/
 __pypackages__/
 *.cache
-
-# =========================
-# Docker
-# =========================
-*.pid
-*.seed
-*.pid.lock
-
-# =========================
-# Misc
-# =========================
-*.sqlite3
-*.db
